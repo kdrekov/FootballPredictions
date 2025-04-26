@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Футболни Прогнози - Точни Залози</title>
+  <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 text-gray-900 font-sans">
+
+  <!-- Header -->
+  <header class="bg-white shadow">
+    <div class="max-w-7xl mx-auto px-4 py-5 flex justify-between items-center">
+      <h1 class="text-2xl font-bold">FootballTips.bg</h1>
+      <nav class="space-x-4">
+        <a href="#home" class="text-gray-700 hover:text-green-600">Начало</a>
+        <a href="#predictions" class="text-gray-700 hover:text-green-600">Прогнози</a>
+        <a href="#archive" class="text-gray-700 hover:text-green-600">Архив</a>
+        <a href="#vip" class="text-white bg-green-600 px-4 py-2 rounded hover:bg-green-700">VIP Зона</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="home" class="bg-green-600 text-white py-12 text-center">
+    <h2 class="text-4xl font-bold mb-4">Футболни прогнози с доказана ефективност</h2>
+    <p class="text-lg">Ежедневни анализи, обосновани селекции и прави колонки от професионалисти</p>
+  </section>
+
+  <!-- Dynamic Predictions -->
+  <section id="predictions" class="max-w-6xl mx-auto px-4 py-10">
+    <h3 class="text-2xl font-semibold mb-6">Топ прогнози за днес</h3>
+    <div id="today-predictions" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+
+    <h3 class="text-2xl font-semibold mt-12 mb-6">Архив</h3>
+    <div id="archive-predictions" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+  </section>
+
+  <!-- JS for loading predictions -->
+  <script>
+    const sheetURL = "https://api.sheetbest.com/sheets/97a04b8c-0818-4ae2-8173-1567bb0052f9";
+    const todayStr = dayjs().format('DD.MM.YYYY');
+
+    fetch(sheetURL)
+      .then(res => res.json())
+      .then(data => {
+        const todayBox = document.getElementById("today-predictions");
+        const archiveBox = document.getElementById("archive-predictions");
+
+        data.forEach(row => {
+          const card = document.createElement("div");
+          card.className = "bg-white shadow-md rounded p-5";
+          card.innerHTML = `
+            <div class="flex items-center justify-between mb-2">
+              <img src="${row.Лого_Лига}" class="w-6 h-6" alt="${row.Лига}">
+              <span class="text-sm text-gray-600">${row.Лига} | ${row.Час}</span>
+            </div>
+            <div class="flex justify-between items-center mb-2">
+              <div class="flex items-center gap-2">
+                <img src="${row.Лого_Домакин}" class="w-8 h-8" alt="${row.Домакин}">
+                <strong>${row.Домакин}</strong>
+              </div>
+              <span class="font-bold text-gray-500">vs</span>
+              <div class="flex items-center gap-2">
+                <strong>${row.Гост}</strong>
+                <img src="${row.Лого_Гост}" class="w-8 h-8" alt="${row.Гост}">
+              </div>
+            </div>
+            <p class="text-sm text-gray-700 mb-1"><strong>Прогноза:</strong> ${row.Прогноза} <span class="text-green-600">@${row.Коефициент}</span></p>
+            <p class="text-sm text-gray-700 mb-1"><strong>Тип:</strong> ${row.Тип}</p>
+            <p class="text-sm text-gray-700 mb-1"><strong>Сигурност:</strong> ${row.Сигурност}/5 ⭐</p>
+            <p class="text-sm text-gray-600 text-justify">${row.Обосновка}</p>
+            ${row["Голове Домакин"] && row["Голове Гост"] ? `<p class='mt-2 text-sm text-gray-700'>Резултат: <strong>${row["Голове Домакин"]} - ${row["Голове Гост"]}</strong></p>` : ''}
+          `;
+
+          if (row.Дата === todayStr) {
+            todayBox.appendChild(card);
+          } else {
+            archiveBox.appendChild(card);
+          }
+        });
+      });
+  </script>
+</body>
+</html>
