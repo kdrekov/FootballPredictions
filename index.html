@@ -5,82 +5,172 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Футболни Прогнози - Точни Залози</title>
   <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
-<body class="bg-gray-100 text-gray-900 font-sans">
+<body>
 
   <!-- Header -->
-  <header class="bg-white shadow">
-    <div class="max-w-7xl mx-auto px-4 py-5 flex justify-between items-center">
-      <h1 class="text-2xl font-bold">FootballTips.bg</h1>
+  <header>
+    <div class="container max-w-7xl mx-auto px-4 py-5 flex justify-between items-center">
+      <a href="#" class="site-logo">FootballTips.bg</a>
       <nav class="space-x-4">
-        <a href="#home" class="text-gray-700 hover:text-green-600">Начало</a>
-        <a href="#predictions" class="text-gray-700 hover:text-green-600">Прогнози</a>
-        <a href="#archive" class="text-gray-700 hover:text-green-600">Архив</a>
-        <a href="#vip" class="text-white bg-green-600 px-4 py-2 rounded hover:bg-green-700">VIP Зона</a>
+        <a href="#home" class="nav-link text-gray-700 hover:text-green-600">Начало</a>
+        <a href="#predictions" class="nav-link text-gray-700 hover:text-green-600">Прогнози</a>
+        <a href="#archive" class="nav-link text-gray-700 hover:text-green-600">Архив</a>
+        <a href="#vip" class="vip-button">VIP Зона</a>
       </nav>
     </div>
   </header>
 
   <!-- Hero Section -->
-  <section id="home" class="bg-green-600 text-white py-12 text-center">
+  <section id="home" class="hero">
     <h2 class="text-4xl font-bold mb-4">Футболни прогнози с доказана ефективност</h2>
     <p class="text-lg">Ежедневни анализи, обосновани селекции и прави колонки от професионалисти</p>
   </section>
 
   <!-- Dynamic Predictions -->
-  <section id="predictions" class="max-w-6xl mx-auto px-4 py-10">
-    <h3 class="text-2xl font-semibold mb-6">Топ прогнози за днес</h3>
-    <div id="today-predictions" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+  <section id="predictions" class="predictions-container">
+    <h3 class="predictions-title">Топ прогнози за днес</h3>
+    <div id="today-predictions" class="predictions-grid"></div>
 
-    <h3 class="text-2xl font-semibold mt-12 mb-6">Архив</h3>
-    <div id="archive-predictions" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+    <h3 class="predictions-title mt-12 mb-6">Архив</h3>
+    <div id="archive-predictions" class="predictions-grid"></div>
   </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-8 mt-12">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-between">
+        <div class="mb-6 md:mb-0">
+          <h4 class="text-xl font-bold mb-4">FootballTips.bg</h4>
+          <p class="text-gray-300">Професионални футболни прогнози и анализи</p>
+        </div>
+        <div>
+          <h5 class="font-bold mb-2">Връзки</h5>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Начало</a></li>
+            <li><a href="#predictions" class="text-gray-300 hover:text-white transition-colors">Прогнози</a></li>
+            <li><a href="#archive" class="text-gray-300 hover:text-white transition-colors">Архив</a></li>
+            <li><a href="#vip" class="text-gray-300 hover:text-white transition-colors">VIP Зона</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="mt-8 pt-8 border-t border-gray-700 text-sm text-gray-400 text-center">
+        <p>&copy; 2025 FootballTips.bg. Всички права запазени.</p>
+      </div>
+    </div>
+  </footer>
 
   <!-- JS for loading predictions -->
   <script>
     const sheetURL = "https://api.sheetbest.com/sheets/97a04b8c-0818-4ae2-8173-1567bb0052f9";
     const todayStr = dayjs().format('DD.MM.YYYY');
-
+    
+    // Show loading indicators
+    document.getElementById("today-predictions").innerHTML = getLoadingCards(3);
+    document.getElementById("archive-predictions").innerHTML = getLoadingCards(3);
+    
     fetch(sheetURL)
       .then(res => res.json())
       .then(data => {
+        // Clear loading indicators
+        document.getElementById("today-predictions").innerHTML = "";
+        document.getElementById("archive-predictions").innerHTML = "";
+        
         const todayBox = document.getElementById("today-predictions");
         const archiveBox = document.getElementById("archive-predictions");
+        
+        // Animations delay counter
+        let animationDelay = 0;
 
         data.forEach(row => {
+          // Create a card for each prediction
           const card = document.createElement("div");
-          card.className = "bg-white shadow-md rounded p-5";
+          card.className = "match-card fade-in";
+          card.style.animationDelay = `${animationDelay * 0.1}s`;
+          animationDelay++;
+          
+          // Convert confidence rating to stars
+          const starsRating = generateStars(parseInt(row.Сигурност));
+          
           card.innerHTML = `
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-sm text-gray-600">${row.Дата}</span>
-              <span class="text-sm text-gray-600">${row.Лига} | ${row.Час}</span>
+            <div class="flex items-center justify-between">
+              <span class="match-date">${row.Дата}</span>
+              <span class="match-date">${row.Лига} | ${row.Час}</span>
             </div>
-            <div class="flex justify-between items-center mb-2">
-              <div class="flex items-center gap-2">
-                <img src="${row.Лого_Домакин}" class="w-8 h-8" alt="${row.Домакин}">
-                <strong>${row.Домакин}</strong>
+            <div class="match-info">
+              <div class="team">
+                <img src="${row.Лого_Домакин}" class="team-logo" alt="${row.Домакин}">
+                <strong class="team-name">${row.Домакин}</strong>
               </div>
-              <span class="font-bold text-gray-500">vs</span>
-              <div class="flex items-center gap-2">
-                <strong>${row.Гост}</strong>
-                <img src="${row.Лого_Гост}" class="w-8 h-8" alt="${row.Гост}">
+              <span class="vs">vs</span>
+              <div class="team">
+                <strong class="team-name">${row.Гост}</strong>
+                <img src="${row.Лого_Гост}" class="team-logo" alt="${row.Гост}">
               </div>
             </div>
-            <p class="text-sm text-gray-700 mb-1"><strong>Прогноза:</strong> ${row.Прогноза} <span class="text-green-600">@${row.Коефициент}</span></p>
-            <p class="text-sm text-gray-700 mb-1"><strong>Тип:</strong> ${row.Тип}</p>
-            <p class="text-sm text-gray-700 mb-1"><strong>Сигурност:</strong> ${row.Сигурност}/5 ⭐</p>
-            <p class="text-sm text-gray-600 text-justify">${row.Обосновка}</p>
-            ${row["Голове Домакин"] && row["Голове Гост"] ? `<p class='mt-2 text-sm text-gray-700'>Резултат: <strong>${row["Голове Домакин"]} - ${row["Голове Гост"]}</strong></p>` : ''}
+            <div class="prediction-details">
+              <p><span class="prediction-label">Прогноза:</span> ${row.Прогноза} <span class="coefficient">@${row.Коефициент}</span></p>
+              <p><span class="prediction-label">Тип:</span> ${row.Тип}</p>
+              <p><span class="prediction-label">Сигурност:</span> <span class="star-rating">${starsRating}</span></p>
+            </div>
+            <p class="prediction-explanation">${row.Обосновка}</p>
+            ${row["Голове Домакин"] && row["Голове Гост"] ? 
+              `<p class='match-result'>Резултат: <strong>${row["Голове Домакин"]} - ${row["Голове Гост"]}</strong></p>` : 
+              ''}
           `;
 
+          // Add cards to the appropriate section
           if (row.Дата === todayStr) {
             todayBox.appendChild(card);
           } else {
             archiveBox.appendChild(card);
           }
         });
+        
+        // If there are no matches today, show a message
+        if (todayBox.children.length === 0) {
+          todayBox.innerHTML = '<p class="text-center py-8 text-gray-500">Няма прогнози за днес. Моля, проверете отново по-късно.</p>';
+        }
+        
+        // Scroll effect for header
+        window.addEventListener('scroll', function() {
+          const header = document.querySelector('header');
+          if (window.scrollY > 50) {
+            header.classList.add('shadow-md');
+          } else {
+            header.classList.remove('shadow-md');
+          }
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+        document.getElementById("today-predictions").innerHTML = '<p class="text-center py-8 text-red-500">Възникна грешка при зареждане на данните. Моля, опитайте отново по-късно.</p>';
+        document.getElementById("archive-predictions").innerHTML = '';
       });
+      
+    // Helper function to generate star ratings
+    function generateStars(count) {
+      return '★'.repeat(count) + '☆'.repeat(5 - count);
+    }
+    
+    // Helper function to generate loading cards
+    function getLoadingCards(count) {
+      let cards = '';
+      for (let i = 0; i < count; i++) {
+        cards += `
+          <div class="match-card">
+            <div class="h-4 w-2/3 mb-3 loading-shimmer rounded"></div>
+            <div class="h-8 w-full mb-4 loading-shimmer rounded"></div>
+            <div class="h-4 w-1/2 mb-2 loading-shimmer rounded"></div>
+            <div class="h-4 w-1/3 mb-2 loading-shimmer rounded"></div>
+            <div class="h-4 w-1/4 mb-4 loading-shimmer rounded"></div>
+            <div class="h-16 w-full loading-shimmer rounded"></div>
+          </div>
+        `;
+      }
+      return cards;
+    }
   </script>
 </body>
 </html>
