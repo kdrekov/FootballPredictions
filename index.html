@@ -5,61 +5,144 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Футболни Прогнози - Точни Залози</title>
   <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
-  <link rel="stylesheet" href="styles.css">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  <style>
+    .match-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .match-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    }
+    .star-rating {
+      color: gold;
+    }
+    .loading-card {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite linear;
+    }
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .fade-in {
+      animation: fadeIn 0.5s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .success-badge {
+      background-color: #10b981;
+      color: white;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .fail-badge {
+      background-color: #ef4444;
+      color: white;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .stats-card {
+      background-color: white;
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      margin-bottom: 24px;
+    }
+    .stats-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #10b981;
+    }
+    .progress-bar {
+      height: 8px;
+      background-color: #e5e7eb;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .progress-value {
+      height: 100%;
+      background-color: #10b981;
+    }
+  </style>
 </head>
-<body>
+<body class="bg-gray-100 text-gray-900 font-sans">
 
   <!-- Header -->
-  <header>
-    <div class="container max-w-7xl mx-auto px-4 py-5 flex justify-between items-center">
-      <a href="#" class="site-logo">FootballTips.bg</a>
+  <header class="bg-white shadow">
+    <div class="max-w-7xl mx-auto px-4 py-5 flex justify-between items-center">
+      <h1 class="text-2xl font-bold">FootballTips.bg</h1>
       <nav class="space-x-4">
-        <a href="#home" class="nav-link text-gray-700 hover:text-green-600">Начало</a>
-        <a href="#predictions" class="nav-link text-gray-700 hover:text-green-600">Прогнози</a>
-        <a href="#archive" class="nav-link text-gray-700 hover:text-green-600">Архив</a>
-        <a href="#vip" class="vip-button">VIP Зона</a>
+        <a href="#home" class="text-gray-700 hover:text-green-600">Начало</a>
+        <a href="#predictions" class="text-gray-700 hover:text-green-600">Прогнози</a>
+        <a href="#stats" class="text-gray-700 hover:text-green-600">Статистика</a>
+        <a href="#archive" class="text-gray-700 hover:text-green-600">Архив</a>
+        <a href="#vip" class="text-white bg-green-600 px-4 py-2 rounded hover:bg-green-700">VIP Зона</a>
       </nav>
     </div>
   </header>
 
   <!-- Hero Section -->
-  <section id="home" class="hero">
+  <section id="home" class="bg-green-600 text-white py-12 text-center">
     <h2 class="text-4xl font-bold mb-4">Футболни прогнози с доказана ефективност</h2>
     <p class="text-lg">Ежедневни анализи, обосновани селекции и прави колонки от професионалисти</p>
   </section>
 
-  <!-- Dynamic Predictions -->
-  <section id="predictions" class="predictions-container">
-    <h3 class="predictions-title">Топ прогнози за днес</h3>
-    <div id="today-predictions" class="predictions-grid"></div>
-
-    <h3 class="predictions-title mt-12 mb-6">Архив</h3>
-    <div id="archive-predictions" class="predictions-grid"></div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="bg-gray-800 text-white py-8 mt-12">
-    <div class="max-w-7xl mx-auto px-4">
-      <div class="flex flex-col md:flex-row justify-between">
-        <div class="mb-6 md:mb-0">
-          <h4 class="text-xl font-bold mb-4">FootballTips.bg</h4>
-          <p class="text-gray-300">Професионални футболни прогнози и анализи</p>
-        </div>
-        <div>
-          <h5 class="font-bold mb-2">Връзки</h5>
-          <ul class="space-y-2">
-            <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Начало</a></li>
-            <li><a href="#predictions" class="text-gray-300 hover:text-white transition-colors">Прогнози</a></li>
-            <li><a href="#archive" class="text-gray-300 hover:text-white transition-colors">Архив</a></li>
-            <li><a href="#vip" class="text-gray-300 hover:text-white transition-colors">VIP Зона</a></li>
-          </ul>
+  <!-- Statistics Section -->
+  <section id="stats" class="max-w-6xl mx-auto px-4 py-10">
+    <h3 class="text-2xl font-semibold mb-6">Статистика</h3>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div class="stats-card">
+        <h4 class="text-gray-500 mb-2">Успеваемост (седмица)</h4>
+        <div class="stats-value" id="weekly-success-rate">-</div>
+        <div class="progress-bar mt-2">
+          <div class="progress-value" id="weekly-success-bar" style="width: 0%"></div>
         </div>
       </div>
-      <div class="mt-8 pt-8 border-t border-gray-700 text-sm text-gray-400 text-center">
-        <p>&copy; 2025 FootballTips.bg. Всички права запазени.</p>
+      <div class="stats-card">
+        <h4 class="text-gray-500 mb-2">ROI (седмица)</h4>
+        <div class="stats-value" id="weekly-roi">-</div>
+        <div class="progress-bar mt-2">
+          <div class="progress-value" id="weekly-roi-bar" style="width: 0%"></div>
+        </div>
+      </div>
+      <div class="stats-card">
+        <h4 class="text-gray-500 mb-2">Успеваемост (общо)</h4>
+        <div class="stats-value" id="total-success-rate">-</div>
+        <div class="progress-bar mt-2">
+          <div class="progress-value" id="total-success-bar" style="width: 0%"></div>
+        </div>
+      </div>
+      <div class="stats-card">
+        <h4 class="text-gray-500 mb-2">ROI (общо)</h4>
+        <div class="stats-value" id="total-roi">-</div>
+        <div class="progress-bar mt-2">
+          <div class="progress-value" id="total-roi-bar" style="width: 0%"></div>
+        </div>
       </div>
     </div>
-  </footer>
+  </section>
+
+  <!-- Dynamic Predictions -->
+  <section id="predictions" class="max-w-6xl mx-auto px-4 py-10">
+    <h3 class="text-2xl font-semibold mb-6">Топ прогнози за днес</h3>
+    <div id="today-predictions" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+
+    <h3 class="text-2xl font-semibold mt-12 mb-6" id="archive">Архив</h3>
+    <div id="archive-predictions" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+  </section>
 
   <!-- JS for loading predictions -->
   <script>
@@ -80,67 +163,177 @@
         const todayBox = document.getElementById("today-predictions");
         const archiveBox = document.getElementById("archive-predictions");
         
+        // Statistics variables
+        let totalBets = 0;
+        let totalWins = 0;
+        let totalInvestment = 0;
+        let totalReturn = 0;
+        
+        // Weekly statistics variables
+        const oneWeekAgo = dayjs().subtract(7, 'day');
+        let weeklyBets = 0;
+        let weeklyWins = 0;
+        let weeklyInvestment = 0;
+        let weeklyReturn = 0;
+        
         // Animations delay counter
         let animationDelay = 0;
 
         data.forEach(row => {
+          // Check if the match is for today or in the archive
+          const isToday = row.Дата === todayStr;
+          
           // Create a card for each prediction
           const card = document.createElement("div");
-          card.className = "match-card fade-in";
+          card.className = "bg-white shadow-md rounded p-5 match-card fade-in";
           card.style.animationDelay = `${animationDelay * 0.1}s`;
           animationDelay++;
           
           // Convert confidence rating to stars
           const starsRating = generateStars(parseInt(row.Сигурност));
           
-          card.innerHTML = `
-            <div class="flex items-center justify-between">
-              <span class="match-date">${row.Дата}</span>
-              <span class="match-date">${row.Лига} | ${row.Час}</span>
-            </div>
-            <div class="match-info">
-              <div class="team">
-                <img src="${row.Лого_Домакин}" class="team-logo" alt="${row.Домакин}">
-                <strong class="team-name">${row.Домакин}</strong>
+          // Check if prediction was successful (only for archived matches)
+          const hasResult = !isToday && row["Голове Домакин"] !== undefined && row["Голове Гост"] !== undefined;
+          let isPredictionCorrect = false;
+          let resultBadge = '';
+          
+          if (hasResult) {
+            // Update statistics totals
+            totalBets++;
+            totalInvestment += 1; // Assume 1 unit bet on each prediction
+            
+            // Calculate if the match prediction was correct
+            const homeGoals = parseInt(row["Голове Домакин"]);
+            const awayGoals = parseInt(row["Голове Гост"]);
+            
+            // Simple 1X2 market check
+            if (row.Прогноза === "1" && homeGoals > awayGoals) {
+              isPredictionCorrect = true;
+            } else if (row.Прогноза === "X" && homeGoals === awayGoals) {
+              isPredictionCorrect = true;
+            } else if (row.Прогноза === "2" && homeGoals < awayGoals) {
+              isPredictionCorrect = true;
+            }
+            
+            // Calculate return
+            if (isPredictionCorrect) {
+              totalWins++;
+              totalReturn += parseFloat(row.Коефициент);
+            }
+            
+            // Check if match is from the last week
+            const matchDate = dayjs(row.Дата, 'DD.MM.YYYY');
+            if (matchDate.isAfter(oneWeekAgo)) {
+              weeklyBets++;
+              weeklyInvestment += 1;
+              if (isPredictionCorrect) {
+                weeklyWins++;
+                weeklyReturn += parseFloat(row.Коефициент);
+              }
+            }
+            
+            // Create result badge
+            resultBadge = isPredictionCorrect ? 
+              `<span class="success-badge"><i class="fas fa-check"></i></span>` : 
+              `<span class="fail-badge"><i class="fas fa-times"></i></span>`;
+          }
+          
+          // Different HTML for today's predictions vs archive
+          if (isToday) {
+            // Today's predictions - no results, no ticks
+            card.innerHTML = `
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-sm text-gray-600">${row.Дата}</span>
+                <span class="text-sm text-gray-600">${row.Лига} | ${row.Час}</span>
               </div>
-              <span class="vs">vs</span>
-              <div class="team">
-                <strong class="team-name">${row.Гост}</strong>
-                <img src="${row.Лого_Гост}" class="team-logo" alt="${row.Гост}">
+              <div class="flex justify-between items-center mb-2">
+                <div class="flex items-center gap-2">
+                  <img src="${row.Лого_Домакин}" class="w-8 h-8" alt="${row.Домакин}">
+                  <strong>${row.Домакин}</strong>
+                </div>
+                <span class="font-bold text-gray-500">vs</span>
+                <div class="flex items-center gap-2">
+                  <strong>${row.Гост}</strong>
+                  <img src="${row.Лого_Гост}" class="w-8 h-8" alt="${row.Гост}">
+                </div>
               </div>
-            </div>
-            <div class="prediction-details">
-              <p><span class="prediction-label">Прогноза:</span> ${row.Прогноза} <span class="coefficient">@${row.Коефициент}</span></p>
-              <p><span class="prediction-label">Тип:</span> ${row.Тип}</p>
-              <p><span class="prediction-label">Сигурност:</span> <span class="star-rating">${starsRating}</span></p>
-            </div>
-            <p class="prediction-explanation">${row.Обосновка}</p>
-            ${row["Голове Домакин"] && row["Голове Гост"] ? 
-              `<p class='match-result'>Резултат: <strong>${row["Голове Домакин"]} - ${row["Голове Гост"]}</strong></p>` : 
-              ''}
-          `;
+              <div>
+                <p class="text-sm text-gray-700 mb-1"><strong>Прогноза:</strong> ${row.Прогноза} <span class="text-green-600">@${row.Коефициент}</span></p>
+                <p class="text-sm text-gray-700 mb-1"><strong>Тип:</strong> ${row.Тип}</p>
+                <p class="text-sm text-gray-700 mb-1"><strong>Сигурност:</strong> <span class="star-rating">${starsRating}</span></p>
+              </div>
+              <p class="text-sm text-gray-600 text-justify mt-2">${row.Обосновка}</p>
+            `;
+          } else {
+            // Archive predictions - with results and validation ticks
+            card.innerHTML = `
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-sm text-gray-600">${row.Дата}</span>
+                <span class="text-sm text-gray-600">${row.Лига} | ${row.Час}</span>
+              </div>
+              <div class="flex justify-between items-center mb-2">
+                <div class="flex items-center gap-2">
+                  <img src="${row.Лого_Домакин}" class="w-8 h-8" alt="${row.Домакин}">
+                  <strong>${row.Домакин}</strong>
+                </div>
+                <span class="font-bold text-gray-500">vs</span>
+                <div class="flex items-center gap-2">
+                  <strong>${row.Гост}</strong>
+                  <img src="${row.Лого_Гост}" class="w-8 h-8" alt="${row.Гост}">
+                </div>
+              </div>
+              <div class="flex justify-between items-center">
+                <div>
+                  <p class="text-sm text-gray-700 mb-1"><strong>Прогноза:</strong> ${row.Прогноза} <span class="text-green-600">@${row.Коефициент}</span></p>
+                  <p class="text-sm text-gray-700 mb-1"><strong>Тип:</strong> ${row.Тип}</p>
+                  <p class="text-sm text-gray-700 mb-1"><strong>Сигурност:</strong> <span class="star-rating">${starsRating}</span></p>
+                </div>
+                ${hasResult ? 
+                  `<div class="flex items-center">
+                    <span class="text-lg font-bold mr-3">${row["Голове Домакин"]} - ${row["Голове Гост"]}</span>
+                    ${resultBadge}
+                  </div>` : 
+                  ''}
+              </div>
+              <p class="text-sm text-gray-600 text-justify mt-2">${row.Обосновка}</p>
+            `;
+          }
 
           // Add cards to the appropriate section
-          if (row.Дата === todayStr) {
+          if (isToday) {
             todayBox.appendChild(card);
           } else {
             archiveBox.appendChild(card);
           }
         });
         
+        // Calculate and display statistics
+        updateStatistics(totalBets, totalWins, totalInvestment, totalReturn, 
+                         weeklyBets, weeklyWins, weeklyInvestment, weeklyReturn);
+        
         // If there are no matches today, show a message
         if (todayBox.children.length === 0) {
           todayBox.innerHTML = '<p class="text-center py-8 text-gray-500">Няма прогнози за днес. Моля, проверете отново по-късно.</p>';
         }
         
-        // Scroll effect for header
-        window.addEventListener('scroll', function() {
-          const header = document.querySelector('header');
-          if (window.scrollY > 50) {
-            header.classList.add('shadow-md');
-          } else {
-            header.classList.remove('shadow-md');
-          }
+        // If there are no archive matches, show a message
+        if (archiveBox.children.length === 0) {
+          archiveBox.innerHTML = '<p class="text-center py-8 text-gray-500">Няма архивирани прогнози.</p>';
+        }
+        
+        // Scroll to sections when navigation is clicked
+        document.querySelectorAll('nav a').forEach(link => {
+          link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href').substring(1);
+            const targetSection = document.getElementById(targetId);
+            if (targetSection) {
+              window.scrollTo({
+                top: targetSection.offsetTop - 80,
+                behavior: 'smooth'
+              });
+            }
+          });
         });
       })
       .catch(error => {
@@ -159,17 +352,47 @@
       let cards = '';
       for (let i = 0; i < count; i++) {
         cards += `
-          <div class="match-card">
-            <div class="h-4 w-2/3 mb-3 loading-shimmer rounded"></div>
-            <div class="h-8 w-full mb-4 loading-shimmer rounded"></div>
-            <div class="h-4 w-1/2 mb-2 loading-shimmer rounded"></div>
-            <div class="h-4 w-1/3 mb-2 loading-shimmer rounded"></div>
-            <div class="h-4 w-1/4 mb-4 loading-shimmer rounded"></div>
-            <div class="h-16 w-full loading-shimmer rounded"></div>
+          <div class="bg-white shadow-md rounded p-5 match-card">
+            <div class="h-4 w-2/3 mb-3 loading-card rounded"></div>
+            <div class="h-8 w-full mb-4 loading-card rounded"></div>
+            <div class="h-4 w-1/2 mb-2 loading-card rounded"></div>
+            <div class="h-4 w-1/3 mb-2 loading-card rounded"></div>
+            <div class="h-4 w-1/4 mb-4 loading-card rounded"></div>
+            <div class="h-16 w-full loading-card rounded"></div>
           </div>
         `;
       }
       return cards;
+    }
+    
+    // Function to update statistics
+    function updateStatistics(totalBets, totalWins, totalInvestment, totalReturn, 
+                             weeklyBets, weeklyWins, weeklyInvestment, weeklyReturn) {
+      // Calculate total success rate and ROI
+      const totalSuccessRate = totalBets > 0 ? (totalWins / totalBets * 100).toFixed(1) : 0;
+      const totalROI = totalInvestment > 0 ? ((totalReturn - totalInvestment) / totalInvestment * 100).toFixed(1) : 0;
+      
+      // Calculate weekly success rate and ROI
+      const weeklySuccessRate = weeklyBets > 0 ? (weeklyWins / weeklyBets * 100).toFixed(1) : 0;
+      const weeklyROI = weeklyInvestment > 0 ? ((weeklyReturn - weeklyInvestment) / weeklyInvestment * 100).toFixed(1) : 0;
+      
+      // Update DOM elements
+      document.getElementById('weekly-success-rate').textContent = weeklyBets > 0 ? `${weeklySuccessRate}%` : 'Няма данни';
+      document.getElementById('weekly-roi').textContent = weeklyBets > 0 ? `${weeklyROI}%` : 'Няма данни';
+      document.getElementById('total-success-rate').textContent = totalBets > 0 ? `${totalSuccessRate}%` : 'Няма данни';
+      document.getElementById('total-roi').textContent = totalBets > 0 ? `${totalROI}%` : 'Няма данни';
+      
+      // Update progress bars (capped at 100% for visual purposes)
+      document.getElementById('weekly-success-bar').style.width = `${Math.min(weeklySuccessRate, 100)}%`;
+      document.getElementById('weekly-roi-bar').style.width = `${Math.min(Math.max(weeklyROI, 0), 100)}%`;
+      document.getElementById('total-success-bar').style.width = `${Math.min(totalSuccessRate, 100)}%`;
+      document.getElementById('total-roi-bar').style.width = `${Math.min(Math.max(totalROI, 0), 100)}%`;
+      
+      // Add color coding for ROI
+      document.getElementById('weekly-roi').style.color = weeklyROI >= 0 ? '#10b981' : '#ef4444';
+      document.getElementById('total-roi').style.color = totalROI >= 0 ? '#10b981' : '#ef4444';
+      document.getElementById('weekly-roi-bar').style.backgroundColor = weeklyROI >= 0 ? '#10b981' : '#ef4444';
+      document.getElementById('total-roi-bar').style.backgroundColor = totalROI >= 0 ? '#10b981' : '#ef4444';
     }
   </script>
 </body>

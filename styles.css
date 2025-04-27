@@ -72,8 +72,14 @@ nav a {
   transition: width var(--transition-speed);
 }
 
-.nav-link:hover::after {
+.nav-link:hover::after,
+.nav-link.active-link::after {
   width: 100%;
+}
+
+.nav-link.active-link {
+  color: var(--primary-color);
+  font-weight: 600;
 }
 
 .vip-button {
